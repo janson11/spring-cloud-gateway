@@ -35,41 +35,63 @@ import org.springframework.validation.annotation.Validated;
 import static org.springframework.util.StringUtils.tokenizeToStringArray;
 
 /**
- * @author Spencer Gibb
+ * @author Spencer Gibb 路由定义
  */
 @Validated
 public class RouteDefinition {
 
 	private String id;
 
+	/**
+	 * 谓语定义数组 请求通过 predicates 判断是否匹配。在 Route 里，PredicateDefinition 转换成 Predicate 。
+	 * 支持解析，但是如果此处单个 PredicateDefinition 的 args[i] 存在逗号( , ) ，会被错误的分隔，例如说，"Query=foo,bz" 。
+	 */
 	@NotEmpty
 	@Valid
 	private List<PredicateDefinition> predicates = new ArrayList<>();
 
+	/**
+	 * 过滤器定义数组 在 Route 里，FilterDefinition 转换成 GatewayFilter 。 需要通过调用
+	 * RouteDefinition#setFilters(filters) 方法进行设置。
+	 */
 	@Valid
 	private List<FilterDefinition> filters = new ArrayList<>();
 
+	/**
+	 * 路由向的URI
+	 */
 	@NotNull
 	private URI uri;
 
+	/**
+	 * 元数据
+	 */
 	private Map<String, Object> metadata = new HashMap<>();
 
+	/**
+	 * 顺序，当请求匹配到多个路由时，使用顺序小的。 需要通过调用 RouteDefinition#setOrder(order) 方法进行设置。
+	 */
 	private int order = 0;
 
 	public RouteDefinition() {
 	}
 
+	/**
+	 * 根据 text 创建 RouteDefinition
+	 * @param text 格式 ${id}=${uri},${predicates[0]},${predicates[1]}...${predicates[n]} 例如
+	 * route001=http://127.0.0.1,Host=**.addrequestparameter.org,Path=/get
+	 */
 	public RouteDefinition(String text) {
 		int eqIdx = text.indexOf('=');
 		if (eqIdx <= 0) {
 			throw new ValidationException("Unable to parse RouteDefinition text '" + text
 					+ "'" + ", must be of the form name=value");
 		}
-
+		// id
 		setId(text.substring(0, eqIdx));
-
+		// predicates
 		String[] args = tokenizeToStringArray(text.substring(eqIdx + 1), ",");
-
+		// uri
 		setUri(URI.create(args[0]));
 
 		for (int i = 1; i < args.length; i++) {

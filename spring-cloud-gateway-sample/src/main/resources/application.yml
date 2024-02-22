@@ -6,6 +6,8 @@ test:
 
 
 spring:
+  application:
+    name: janson-gateway
   jmx:
     enabled: false
   cloud:
@@ -41,3 +43,14 @@ logging:
     reactor.netty: DEBUG
 
 management.endpoints.web.exposure.include: '*'
+eureka:
+  instance:
+    # 续期时间间隔，默认是30s
+    lease-renewal-interval-in-seconds: 10
+    # 续期过期时间间隔，默认90s
+    lease-expiration-duration-in-seconds: 30
+  client:
+    service-url:
+      defaultZone: http://localhost:20000/eureka
+server:
+  port: 10001

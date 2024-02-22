@@ -133,11 +133,13 @@ public class AbstractGatewayControllerEndpoint implements ApplicationEventPublis
 
 		return Mono.just(route).filter(this::validateRouteDefinition)
 				.flatMap(routeDefinition -> this.routeDefinitionWriter
-						.save(Mono.just(routeDefinition).map(r -> {
+						.save(Mono.just(routeDefinition).map(r -> { // 设置id
 							r.setId(id);
 							log.debug("Saving route: " + route);
 							return r;
 						}))
+						// status ：201 ，创建成功。参见 HTTP 规范
+						// ：https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/201
 						.then(Mono.defer(() -> Mono.just(ResponseEntity
 								.created(URI.create("/routes/" + id)).build()))))
 				.switchIfEmpty(
@@ -162,9 +164,9 @@ public class AbstractGatewayControllerEndpoint implements ApplicationEventPublis
 	@DeleteMapping("/routes/{id}")
 	public Mono<ResponseEntity<Object>> delete(@PathVariable String id) {
 		return this.routeDefinitionWriter.delete(Mono.just(id))
-				.then(Mono.defer(() -> Mono.just(ResponseEntity.ok().build())))
+				.then(Mono.defer(() -> Mono.just(ResponseEntity.ok().build())))// 删除成功
 				.onErrorResume(t -> t instanceof NotFoundException,
-						t -> Mono.just(ResponseEntity.notFound().build()));
+						t -> Mono.just(ResponseEntity.notFound().build())); // 删除失败
 	}
 
 	@GetMapping("/routes/{id}/combinedfilters")

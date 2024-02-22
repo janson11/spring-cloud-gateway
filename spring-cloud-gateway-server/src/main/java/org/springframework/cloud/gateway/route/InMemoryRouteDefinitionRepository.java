@@ -28,10 +28,13 @@ import org.springframework.util.StringUtils;
 import static java.util.Collections.synchronizedMap;
 
 /**
- * @author Spencer Gibb
+ * @author Spencer Gibb 基于JVM内存存储的路由配置的存储器
  */
 public class InMemoryRouteDefinitionRepository implements RouteDefinitionRepository {
 
+	/**
+	 * 路由配置映射 key:路由编号 {@link RouteDefinition#id}
+	 */
 	private final Map<String, RouteDefinition> routes = synchronizedMap(
 			new LinkedHashMap<String, RouteDefinition>());
 
