@@ -39,17 +39,36 @@ import static org.springframework.cloud.gateway.support.ServerWebExchangeUtils.t
 
 /**
  * @author Spencer Gibb
+ * 路由
  */
 public class Route implements Ordered {
 
+	/**
+	 * 路由编号
+	 */
 	private final String id;
 
+	/**
+	 * 路由向的URI
+	 */
 	private final URI uri;
 
+	/**
+	 * 顺序
+	 * The actual order can be interpreted as prioritization, with the first object (with the lowest order value) having the highest priority.
+	 * 实际顺序可以解释为优先级，第一个对象（具有最低的顺序值）具有最高优先级。
+	 * 当请求匹配到多个路由时，使用顺序小的。
+	 */
 	private final int order;
 
+	/**
+	 * 谓语数组。请求通过 predicates 判断是否匹配
+	 */
 	private final AsyncPredicate<ServerWebExchange> predicate;
 
+	/**
+	 * 过滤器数组
+	 */
 	private final List<GatewayFilter> gatewayFilters;
 
 	private final Map<String, Object> metadata;

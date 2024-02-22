@@ -48,6 +48,9 @@ public class CachingRouteLocator implements Ordered, RouteLocator,
 
 	private final Flux<Route> routes;
 
+	/**
+	 * 路由缓存
+	 */
 	private final Map<String, List> cache = new ConcurrentHashMap<>();
 
 	private ApplicationEventPublisher applicationEventPublisher;

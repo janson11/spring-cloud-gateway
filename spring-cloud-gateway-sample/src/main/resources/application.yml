@@ -28,11 +28,18 @@ spring:
         predicates:
         - Path=/echo
       # =====================================
-      - id: default_path_to_httpbin
-        uri: ${test.uri}
-        order: 10000
+#      - id: default_path_to_httpbin
+#        uri: ${test.uri}
+#        order: 10000
+#        predicates:
+#        - Path=/**
+
+      # gateway self =====================================
+      - id: gateway_self
+        uri: http://localhost:10001
+        order: 10001
         predicates:
-        - Path=/**
+          - Path=/**
 
 logging:
   level:
